@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class IWorldMapTest {
+public class IWorldMapTest {    // czy da się przetestować interfejs?
     IWorldMap map = new RectangularMap(10, 5);
 
     @Test

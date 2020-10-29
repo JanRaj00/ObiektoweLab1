@@ -4,21 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RectangularMap implements IWorldMap{
-    public final Vector2d upperLimit;
+    public final Vector2d upperLimit;   // proponuję upperRight
     public final Vector2d lowerLimit;
     List<Animal> animals = new ArrayList<>();
 
     public RectangularMap(int width, int height){
         this.lowerLimit = new Vector2d(0, 0);
-        this.upperLimit = new Vector2d(width, height);
+        this.upperLimit = new Vector2d(width, height);  // width - 1
     }
 
     @Override
     public boolean canMoveTo(Vector2d position) {
-        Vector2d upp = position.upperRight(upperLimit);
+        Vector2d upp = position.upperRight(upperLimit); // trochę pokrętne mi się wydaje to obliczenie
         Vector2d low = position.lowerLeft(lowerLimit);
         if(upp.precedes(upperLimit) && low.follows(lowerLimit))
-            if(isOccupied(position))
+            if(isOccupied(position))    // return !isOccupied
                 return false;
             else
                 return true;
@@ -28,7 +28,7 @@ public class RectangularMap implements IWorldMap{
 
     @Override
     public boolean place(Animal animal) {
-        if(isOccupied(animal.getPosition()))
+        if(isOccupied(animal.getPosition()))    // czy isOccupied to właściwa metoda tutaj?
             return false;
         else{
             animals.add(animal);

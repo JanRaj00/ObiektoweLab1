@@ -1,10 +1,10 @@
 package agh.cs.lab1;
 
-import org.junit.Assert;
+import org.junit.Assert.*;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class IWorldMapTest {
+public class RectangularMapTest {
     IWorldMap map = new RectangularMap(10, 5);
 
     @Test
@@ -16,10 +16,11 @@ public class IWorldMapTest {
     @Test
     public void placeTest(){
         map.place(new Animal(map));
-        assertTrue(map.isOccupied(new Vector2d(2,2)));
+        assertTrue(map.isOccupied(new Vector2d(2, 2)));
         map.place(new Animal(map, new Vector2d(3, 4)));
         assertTrue(map.isOccupied(new Vector2d(3, 4)));
     }
+
 
     @Test
     public void canMoveToTest(){
@@ -31,6 +32,7 @@ public class IWorldMapTest {
         MoveDirection[] dir2={MoveDirection.LEFT, MoveDirection.FORWARD, MoveDirection.FORWARD};
         MoveDirection[] dir3={MoveDirection.FORWARD, MoveDirection.RIGHT, MoveDirection.FORWARD};
         MoveDirection[] dir4={MoveDirection.BACKWARD, MoveDirection.LEFT, MoveDirection.FORWARD};
+
         for (int i=0; i<3; i++) {
             animal1.move(dir1[i]);
             animal2.move(dir2[i]);
@@ -38,7 +40,7 @@ public class IWorldMapTest {
             animal4.move(dir4[i]);
         }
 
-        assertEquals(animal1.getPosition(), new Vector2d(2, 3));
+        assertEquals(new Vector2d(2, 3),animal1.getPosition());
         assertEquals(animal2.getPosition(), new Vector2d(3, 3));
         assertEquals(animal3.getPosition(), new Vector2d(10, 5));
         assertEquals(animal4.getPosition(), new Vector2d(0, 0));

@@ -7,7 +7,7 @@ import java.util.Random;
 import java.lang.Math;
 
 public class GrassField extends AbstractWorldMap {
-    public final int fieldsNumber;
+    public final int fieldsNumber;  // proszę przemyśleć, czy to jest część interfejsu
     List<Grass> grasses;
 
     public GrassField(int n){
@@ -20,8 +20,8 @@ public class GrassField extends AbstractWorldMap {
     public void generateFields(){
         int i=0;
         while(i<this.fieldsNumber){
-            Random rnd = new Random();
-            int maxDraw = (int) Math.sqrt(this.fieldsNumber*10);
+            Random rnd = new Random();  // dlaczego tworzy Pan nowy generator co obrót pętli?
+            int maxDraw = (int) Math.sqrt(this.fieldsNumber*10);    // j.w.
             Vector2d newPosition = new Vector2d(rnd.nextInt(maxDraw), rnd.nextInt(maxDraw));
             boolean isPlaced = false; //znacznik mowiacy czy pole jest zajete
             for (Grass g: grasses) {

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RectangularMap extends AbstractWorldMap{
-    public final Vector2d upperLimit;
-    public final Vector2d lowerLimit;
+    private final Vector2d upperLimit;
+    private final Vector2d lowerLimit;
 
     public RectangularMap(int width, int height){
         this.lowerLimit = new Vector2d(0, 0);
@@ -24,12 +24,7 @@ public class RectangularMap extends AbstractWorldMap{
 
     @Override
     public Object objectAt(Vector2d position) {
-        for(Animal pet: animals){
-            if (position.equals(pet.getPosition())){
-                return pet;
-            }
-        }
-        return null;
+        return elements.get(position);
     }
 
     @Override

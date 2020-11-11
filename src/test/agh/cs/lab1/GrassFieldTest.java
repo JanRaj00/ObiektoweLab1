@@ -12,30 +12,25 @@ public class GrassFieldTest {
 
     @Test
     public void isOccupiedTestGF(){
-        Animal a = new Animal(grassMap, new Vector2d(5, 7));
-        assertTrue(grassMap.isOccupied(new Vector2d(5, 7)));
-    }
-
-    @Test
-    public void placeTestGF(){
         grassMap.place(new Animal(grassMap));
         assertTrue(grassMap.isOccupied(new Vector2d(2, 2)));
     }
 
     @Test
-    public void canMoveToTestGF(){
-        Animal a = new Animal(grassMap, new Vector2d(2, 3));
-        Animal b = new Animal(grassMap, new Vector2d(3, 3));
-        MoveDirection[] dir1={MoveDirection.RIGHT, MoveDirection.FORWARD, MoveDirection.FORWARD};
-        MoveDirection[] dir2={MoveDirection.LEFT, MoveDirection.FORWARD, MoveDirection.FORWARD};
-        for(int i=0; i<3; i++){
-            a.move(dir1[i]);
-            b.move(dir2[i]);
-        }
-        assertEquals(new Vector2d(2, 3), a.getPosition());
-        assertEquals(new Vector2d(3, 3), b.getPosition());
+    public void placeTestGF(){
+        grassMap.place(new Animal(grassMap));
+        assertFalse(grassMap.objectAt(new Vector2d(2, 2))==null);
     }
 
+    @Test
+    public void canMoveToTestGF(){
+        grassMap.place(new Animal(grassMap, new Vector2d(2, 3)));
+        grassMap.place(new Animal(grassMap, new Vector2d(3, 3)));
+        MoveDirection[] d={MoveDirection.RIGHT, MoveDirection.LEFT, MoveDirection.FORWARD, MoveDirection.FORWARD};
+        grassMap.run(d);
+        assertEquals(MapDirection.EAST.toString(), grassMap.objectAt(new Vector2d(2, 3)).toString());
+        assertEquals(MapDirection.WEST.toString(), grassMap.objectAt(new Vector2d(3, 3)).toString());
+    }
     @Test
     public void objectAtTest(){
         int n=(int) Math.sqrt(10*10);
@@ -48,13 +43,12 @@ public class GrassFieldTest {
             }
         }
 
-        Animal animal1 = new Animal(grassMap, new Vector2d(2, 3));
-        for(int i=0; i<15; i++){
-            animal1.move(MoveDirection.FORWARD);
-        }
-
+        grassMap.place(new Animal(grassMap, new Vector2d(2, 3)));
+        String[] dir = {"f", "f", "f", "f", "f"};
+        MoveDirection[] dirr = new OptionsParser().parse(dir);
+        grassMap.run(dirr);
         assertEquals(10, numberofGrassFields);
-        assertEquals(animal1, grassMap.objectAt(new Vector2d(2, 18)));
+        assertFalse(grassMap.objectAt(new Vector2d(2, 8))==null);
     }
 
     @Test

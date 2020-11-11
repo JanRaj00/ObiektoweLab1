@@ -9,14 +9,12 @@ public class Animal {
         this.position = new Vector2d(2, 2);
         this.orientation = MapDirection.NORTH;
         this.map=map;
-        map.place(this);
     }
 
     public Animal(IWorldMap map, Vector2d initialPosition){
         this.position = initialPosition;
         this.orientation = MapDirection.NORTH;
         this.map=map;
-        map.place(this);
     }
 
     public Vector2d getPosition(){

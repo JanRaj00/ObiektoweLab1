@@ -10,7 +10,8 @@ public class RectangularMapTest {
     @Test
     public void isOccupiedTest(){
         assertFalse(map.isOccupied(new Vector2d(2, 2)));
-        assertFalse(map.isOccupied(new Vector2d(3, 4)));
+        map.place(new Animal(map, new Vector2d(2, 2)));
+        assertTrue(map.isOccupied(new Vector2d(2, 2)));
     }
 
     @Test
@@ -24,34 +25,25 @@ public class RectangularMapTest {
 
     @Test
     public void canMoveToTest(){
-        Animal animal1 = new Animal(map, new Vector2d(2, 3));
-        Animal animal2 = new Animal(map, new Vector2d(3, 3));
-        Animal animal3 = new Animal(map, new Vector2d(10, 5));
-        Animal animal4 = new Animal(map, new Vector2d(0, 0));
-        MoveDirection[] dir1={MoveDirection.RIGHT, MoveDirection.FORWARD, MoveDirection.FORWARD};
-        MoveDirection[] dir2={MoveDirection.LEFT, MoveDirection.FORWARD, MoveDirection.FORWARD};
-        MoveDirection[] dir3={MoveDirection.FORWARD, MoveDirection.RIGHT, MoveDirection.FORWARD};
-        MoveDirection[] dir4={MoveDirection.BACKWARD, MoveDirection.LEFT, MoveDirection.FORWARD};
-
-        for (int i=0; i<3; i++) {
-            animal1.move(dir1[i]);
-            animal2.move(dir2[i]);
-            animal3.move(dir3[i]);
-            animal4.move(dir4[i]);
-        }
-
-        assertEquals(new Vector2d(2, 3),animal1.getPosition());
-        assertEquals(animal2.getPosition(), new Vector2d(3, 3));
-        assertEquals(animal3.getPosition(), new Vector2d(10, 5));
-        assertEquals(animal4.getPosition(), new Vector2d(0, 0));
+        map.place(new Animal(map, new Vector2d(2,3)));
+        map.place(new Animal(map, new Vector2d(3, 3)));
+        String[] s1 = {"r", "l", "f", "f"};
+        MoveDirection[] movedir1=new OptionsParser().parse(s1);
+        map.run(movedir1);
+        assertEquals(MapDirection.EAST.toString(), map.objectAt(new Vector2d(2, 3)).toString());
+        assertEquals(MapDirection.WEST.toString(), map.objectAt(new Vector2d(3, 3)).toString());
+        String[] s2={"l", "r", "f", "b", "f", "b", "f", "b", "f", "b"};
+        MoveDirection[] movedir2=new OptionsParser().parse(s2);
+        map.run(movedir2);
+        assertFalse(map.objectAt(new Vector2d(2, 5))==null);
+        assertFalse(map.objectAt(new Vector2d(3, 0))==null);
     }
 
     @Test
     public void objectAtTest(){
-        Animal animal1 = new Animal(map, new Vector2d(2, 3));
-        animal1.move(MoveDirection.FORWARD);
-        assertEquals(null, map.objectAt(new Vector2d(2, 3)));
-        assertEquals(animal1, map.objectAt(new Vector2d(2, 4)));
+        map.place(new Animal(map, new Vector2d(2, 3)));
+        assertEquals(null, map.objectAt(new Vector2d(2, 2)));
+        assertFalse(map.objectAt(new Vector2d(2, 3))==null);
     }
 
     @Test

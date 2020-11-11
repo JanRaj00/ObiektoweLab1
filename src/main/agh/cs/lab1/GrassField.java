@@ -1,14 +1,12 @@
 package agh.cs.lab1;
 
-import javax.swing.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.lang.Math;
 
 public class GrassField extends AbstractWorldMap {
     public final int fieldsNumber;
     List<Grass> grasses;
+    Map<Vector2d, Grass> grassElements = new HashMap<>();
 
     public GrassField(int n){
         grasses = new ArrayList<>();
@@ -19,48 +17,35 @@ public class GrassField extends AbstractWorldMap {
 
     public void generateFields(){
         int i=0;
+        Random rnd = new Random();
+        int maxDraw = (int) Math.sqrt(this.fieldsNumber*10);
+        //System.out.println("xd");
         while(i<this.fieldsNumber){
-            Random rnd = new Random();
-            int maxDraw = (int) Math.sqrt(this.fieldsNumber*10);
             Vector2d newPosition = new Vector2d(rnd.nextInt(maxDraw), rnd.nextInt(maxDraw));
-            boolean isPlaced = false; //znacznik mowiacy czy pole jest zajete
-            for (Grass g: grasses) {
-                if(g.getPosition().equals(newPosition)) {
-                    isPlaced = true;
-                    break;
-                }
-            }
-            if(!isPlaced){
-                grasses.add(new Grass(newPosition));
+            if(this.grassElements.get(newPosition)==null){
+                Grass g = new Grass(newPosition);
+                this.grasses.add(g);
+                this.grassElements.put(newPosition, g);
                 i++; //jezeli pole nie jest zajete to idziemy dalej
             }
         }
+
     }
 
     @Override
     public boolean canMoveTo(Vector2d position){
-        for (Animal pet: animals){
-            if(pet.getPosition().equals(position)){
-                return false;
-            }
-        }
-        return true;
+        if(this.elements.get(position)==null) return true;
+        else return false;
     }
 
 
     @Override
     public Object objectAt(Vector2d position) {
-        for(Animal pet: animals) {
-            if (position.equals(pet.getPosition())) {
-                return pet;
-            }
+        if(this.elements.get(position)!=null){
+            return this.elements.get(position);
         }
-        for(Grass g: grasses){
-            if(position.equals(g.getPosition())){
-                return g;
-            }
-        }
-        return null;
+        else
+            return this.grassElements.get(position);
     }
 
 

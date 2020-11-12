@@ -5,7 +5,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertArrayEquals;
 
 public class OptionsParserTest {
-
+    // ten test przechodzi?
     @Test
     public void parseTest(){
         String[] sOne={"b", "l", "right", "f", "forward"};

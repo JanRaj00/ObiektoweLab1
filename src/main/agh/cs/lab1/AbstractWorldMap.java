@@ -51,7 +51,7 @@ abstract class AbstractWorldMap implements IWorldMap{
 
   @Override
     public String toString(){
-        MapVisualizer visualize=new MapVisualizer(this);
+        MapVisualizer visualize=new MapVisualizer(this);    // nie warto tego tworzyć co wywołanie
         return visualize.draw(getLowerLeft(), getUpperRight());
     }
 

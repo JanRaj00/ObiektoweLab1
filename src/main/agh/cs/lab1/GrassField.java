@@ -3,10 +3,11 @@ package agh.cs.lab1;
 import java.util.*;
 import java.lang.Math;
 
-public class GrassField extends AbstractWorldMap {
+public class GrassField extends AbstractWorldMap{
     public final int fieldsNumber;
     List<Grass> grasses;
     Map<Vector2d, Grass> grassElements = new HashMap<>();
+    MapBoundary mapElements = new MapBoundary();
 
     public GrassField(int n){
         grasses = new ArrayList<>();
@@ -27,6 +28,7 @@ public class GrassField extends AbstractWorldMap {
                 this.grasses.add(g);
                 this.grassElements.put(newPosition, g);
                 i++; //jezeli pole nie jest zajete to idziemy dalej
+                mapElements.place(g);
             }
         }
 
@@ -38,44 +40,29 @@ public class GrassField extends AbstractWorldMap {
         else return false;
     }
 
-
     @Override
+    public boolean place(Animal animal) throws IllegalArgumentException{
+        super.place(animal);
+        mapElements.place(animal);
+        return true;
+    }
+
     public Object objectAt(Vector2d position) {
-        if(this.elements.get(position)!=null){
-            return this.elements.get(position);
+        Object object = super.objectAt(position);
+        if(object!=null){
+            return object;
         }
-        else
-            return this.grassElements.get(position);
+        else{
+            return grassElements.get(position);
+        }
     }
 
 
-   @Override
     public Vector2d getLowerLeft(){
-        int n = (int) Math.sqrt(this.fieldsNumber);
-        Vector2d lower = new Vector2d(n, n);
-        for(Animal pet: animals) {
-            Vector2d newPosition = pet.getPosition();
-            lower = lower.lowerLeft(newPosition);
-        }
-        for(Grass g: grasses) {
-            Vector2d newPosition = g.getPosition();
-            lower = lower.lowerLeft(newPosition);
-        }
-        return lower;
+        return mapElements.getBoundaryLeft();
     }
 
-    @Override
     public Vector2d getUpperRight(){
-        Vector2d upper=new Vector2d(0, 0);
-        for(Animal pet: animals){
-            Vector2d newPosition = pet.getPosition();
-            upper=upper.upperRight(newPosition);
-        }
-        for(Grass g: grasses) {
-            Vector2d newPosition = g.getPosition();
-            upper=upper.upperRight(newPosition);
-        }
-        return upper;
+        return mapElements.getBoundaryRight();
     }
-
 }

@@ -1,20 +1,37 @@
 package agh.cs.lab1;
 
-public class Animal {
+import java.util.*;
+
+public class Animal implements IMapElement{
     private Vector2d position;
-    private MapDirection orientation;
+    private MapDirection orientation=MapDirection.NORTH;
     private IWorldMap map;
+    private List<IPositionChangeObserver> observers=new ArrayList<>();
 
     public Animal(IWorldMap map){
-        this.position = new Vector2d(2, 2);
-        this.orientation = MapDirection.NORTH;
+        this.position=new Vector2d(2,2);
         this.map=map;
+        this.observers=new LinkedList<>();
     }
 
     public Animal(IWorldMap map, Vector2d initialPosition){
         this.position = initialPosition;
-        this.orientation = MapDirection.NORTH;
         this.map=map;
+        this.observers=new LinkedList<>();
+    }
+
+    public void addObserver(IPositionChangeObserver observer){
+        observers.add(observer);
+    }
+
+    public void removeObserver(IPositionChangeObserver observer){
+        observers.remove(observer);
+    }
+
+    public void positionChanged(Vector2d oldPosition, Vector2d newPosition){
+        for(IPositionChangeObserver observer: observers){
+            observer.positionChanged(oldPosition, newPosition, this);
+        }
     }
 
     public Vector2d getPosition(){
@@ -42,14 +59,20 @@ public class Animal {
 
             case FORWARD:
                 Vector2d newPosition = this.position.add(this.orientation.toUnitVector());
-                if(map.canMoveTo(newPosition))
+                if(map.canMoveTo(newPosition)) {
+                    Vector2d oldPosition = this.getPosition();
                     this.position = newPosition;
+                    this.positionChanged(oldPosition, newPosition);
+                }
                 break;
 
             case BACKWARD:
                 newPosition = this.position.subtract(this.orientation.toUnitVector());
-                if(map.canMoveTo(newPosition))
+                if(map.canMoveTo(newPosition)) {
+                    Vector2d oldPosition = this.getPosition();
                     this.position = newPosition;
+                    this.positionChanged(oldPosition, newPosition);
+                }
                 break;
 
             default:

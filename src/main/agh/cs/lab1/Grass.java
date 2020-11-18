@@ -1,6 +1,6 @@
 package agh.cs.lab1;
 
-public class Grass {
+public class Grass implements IMapElement{
     public final Vector2d position;
     public Grass(Vector2d pos){
         this.position=pos;
@@ -10,5 +10,4 @@ public class Grass {
 
     @Override
     public String toString() { return "*"; }
-
 }

@@ -12,20 +12,10 @@ public class RectangularMap extends AbstractWorldMap{
         this.upperLimit = new Vector2d(width, height);
     }
 
-    @Override
     public boolean canMoveTo(Vector2d position) {
-        Vector2d upp = position.upperRight(upperLimit);
-        Vector2d low = position.lowerLeft(lowerLimit);
-        if(upp.precedes(upperLimit) && low.follows(lowerLimit))
-            return(!isOccupied(position));
-        else
-            return false;
+        return super.canMoveTo(position) && position.follows(lowerLimit) && position.precedes(upperLimit);
     }
 
-    @Override
-    public Object objectAt(Vector2d position) {
-        return elements.get(position);
-    }
 
     @Override
     public Vector2d getLowerLeft(){

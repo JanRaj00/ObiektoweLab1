@@ -5,9 +5,9 @@ import java.lang.Math;
 
 public class GrassField extends AbstractWorldMap{
     public final int fieldsNumber;
-    List<Grass> grasses;
+    List<Grass> grasses;    // te trzy pola powinny być prywatne
     Map<Vector2d, Grass> grassElements = new HashMap<>();
-    MapBoundary mapElements = new MapBoundary();
+    MapBoundary mapElements = new MapBoundary();    // myląca nazwa
 
     public GrassField(int n){
         grasses = new ArrayList<>();

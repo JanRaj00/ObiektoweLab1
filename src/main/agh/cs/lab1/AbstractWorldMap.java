@@ -54,7 +54,7 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
     public abstract Vector2d getUpperRight();
 
     public String toString(){
-        MapVisualizer visualize=new MapVisualizer(this);
+        MapVisualizer visualize=new MapVisualizer(this);    // czy to trzeba tworzyć co wywołanie?
         return visualize.draw(getLowerLeft(), getUpperRight());
     }
 

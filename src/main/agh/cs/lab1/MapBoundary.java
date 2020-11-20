@@ -26,7 +26,7 @@ public class MapBoundary implements IPositionChangeObserver{
         }
     }
 
-    public Vector2d getBoundaryLeft(){
+    public Vector2d getBoundaryLeft(){  // mapa ma dwa lewe rogi
             return new Vector2d(setX.first().getPosition().x, setY.first().getPosition().y);
     }
 

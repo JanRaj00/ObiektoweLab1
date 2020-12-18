@@ -1,8 +1,6 @@
 package agh.cs.lab1;
 
 
-import java.util.Comparator;
-
 public class AnimalWithEnergy implements Comparable<AnimalWithEnergy> {
     public final Animal animal;
     public final int energy;
@@ -14,6 +12,6 @@ public class AnimalWithEnergy implements Comparable<AnimalWithEnergy> {
 
     @Override
     public int compareTo(AnimalWithEnergy other) {
-        return this.energy == other.energy ? other.animal.number - this.animal.number : other.energy - this.energy;
+        return this.energy == other.energy ? Long.compare(other.animal.number, this.animal.number) : other.energy - this.energy;
     }
 }

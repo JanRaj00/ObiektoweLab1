@@ -1,9 +1,5 @@
 package agh.cs.lab1;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
 import java.util.LinkedList;
 
@@ -26,34 +22,32 @@ public class Genome {
         return this.genome[rand.nextInt(32)]; //zwroc wartosc z wylosowanej pozycji
     }
 
-    public Genome mixGenes(Genome firstParent, Genome secondParent){
-        Genome childGenome = new Genome();
+    public void mixGenes(Genome firstParent, Genome secondParent){
         Random rand = new Random();
         int firstCut = rand.nextInt(30);
         firstCut=firstCut+1;
         int secondCut = rand.nextInt(31-firstCut);
         secondCut = secondCut + firstCut + 1;
 
-        for(int i=0; i<firstCut; i++) childGenome.genome[i]=firstParent.genome[i];
-        for(int i=firstCut; i<secondCut; i++) childGenome.genome[i]=secondParent.genome[i];
-        for(int i=secondCut; i<32; i++) childGenome.genome[i]=firstParent.genome[i];
+        for(int i=0; i<firstCut; i++) this.genome[i]=firstParent.genome[i];
+        for(int i=firstCut; i<secondCut; i++) this.genome[i]=secondParent.genome[i];
+        for(int i=secondCut; i<32; i++) this.genome[i]=firstParent.genome[i];
 
         LinkedList<Integer> missingGenomes = new LinkedList<>();
         int[] numberOfGenes={0,0,0,0,0,0,0,0};
         for(int i=0; i<32; i++){
-            numberOfGenes[childGenome.genome[i]]++;
+            numberOfGenes[this.genome[i]]++;
         }
         for(int i=0; i<8; i++) if(numberOfGenes[i]==0) missingGenomes.add(i);
 
         int i=0; //licznik do petli while
         while(!missingGenomes.isEmpty()){
             if(numberOfGenes[i]>1){
-                childGenome.genome[i]=missingGenomes.pop();
+                this.genome[i]=missingGenomes.pop();
                 numberOfGenes[i]--;
             }
             i++;
         }
-        sort(childGenome.genome);
-        return childGenome;
+        sort(this.genome);
     }
 }

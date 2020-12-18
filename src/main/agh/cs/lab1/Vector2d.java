@@ -1,6 +1,6 @@
 package agh.cs.lab1;
 
-public class Vector2d extends Project1.Vector2d {
+public class Vector2d {
     public final int x;
     public final int y;
 

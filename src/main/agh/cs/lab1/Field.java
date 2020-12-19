@@ -5,9 +5,8 @@ import java.util.*;
 
 public class Field {
     private SortedSet <AnimalWithEnergy> animals = new TreeSet<AnimalWithEnergy>();
-    public Field(AnimalWithEnergy animalWithEnergy){
+    public Field(){
         this.animals=new TreeSet<AnimalWithEnergy>(); //jezeli stawiamy samo zwierze
-        this.animals.add(animalWithEnergy);
     }
 
     public void addAnimal(AnimalWithEnergy animalWithEnergy){ this.animals.add(animalWithEnergy); }
@@ -15,23 +14,6 @@ public class Field {
     public void removeAnimal(AnimalWithEnergy animalWithEnergy){ this.animals.remove(animalWithEnergy);}
 
     public int getSize(){ return this.animals.size(); }
-
-    public void moveAnimals(){
-        if(animals.size()==0) return;
-        else{
-            for(AnimalWithEnergy animalWithEnergy: animals){
-                animalWithEnergy.animal.move();
-            }
-        }
-    }
-
-    public List<AnimalWithEnergy> deadAnimalsOnField(){
-        List<AnimalWithEnergy> deadAnimals = new LinkedList<>(); //wszystkie martwe zwierzeta z jednego pola
-        for(AnimalWithEnergy animalWithEnergy: animals){
-            if(!animalWithEnergy.animal.isAlive()) deadAnimals.add(animalWithEnergy);
-        }
-        return deadAnimals;
-    }
 
     public List<AnimalWithEnergy> getBestAnimals(){
         int bestEnergy = this.animals.first().animal.getEnergy();

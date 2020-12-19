@@ -7,7 +7,9 @@ public class Plant implements IMapElement{
         this.position=pos;
         this.plantEnergy=value;
     }
-
+    public void changePlantEnergy(int value){
+        this.plantEnergy=value;
+    }
     public Vector2d getPosition(){ return this.position; }
     public int getPlantEnergy() {return this.plantEnergy; }
 }

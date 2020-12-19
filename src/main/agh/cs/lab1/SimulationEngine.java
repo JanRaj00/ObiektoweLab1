@@ -1,24 +1,33 @@
 package agh.cs.lab1;
 
-public class SimulationEngine implements IEngine{
-    Planet map;
-    int plantEnergy;
-    int moveEnergy;
-    int startEnergy;
-    public SimulationEngine(int width, int height, int moveEnergy, int startEnergy, int plantEnergy, double jungleRatio){
-        this.map=new Planet(width, height, jungleRatio, plantEnergy);
-        this.moveEnergy=moveEnergy;
-        this.startEnergy=startEnergy;
+public class SimulationEngine{
+    private Planet map;
+    private Configuration configuration;
+
+    public SimulationEngine(Configuration config){
+        this.configuration=config;
+        this.map = new Planet(config.width, config.height, config.jungleRatio, config.plantEnergy);
     }
-    public void run(){
-        int numberOfStartAnimals = (int)(0.05)*map.getSize();
+    public void prepAMap(){
+        int numberOfStartAnimals = configuration.startAnimals;
         while(numberOfStartAnimals>0) {
+            int startEne = configuration.startEnergy;
+            int moveEne = configuration.moveEnergy;
+            if(numberOfStartAnimals%6==0) {
+                Animal animal = new Animal(map, map.generateRandomVector(true), startEne, moveEne, startEne);
+            }
+            else{
+                Animal animal = new Animal(map, map.generateRandomVector(false), startEne, moveEne, startEne);
+            }
             numberOfStartAnimals--;
         }
-        while(true){
-            this.map.placePlant(false);
-            this.map.placePlant(true);
-
-        }
+    }
+    public void nextDay(){
+        this.map.makeFunerals();
+        this.map.moveAnimals();
+        this.map.feedAnimals();
+        this.map.procreateAnimal();
+        this.map.placePlant(true);
+        this.map.placePlant(false);
     }
 }

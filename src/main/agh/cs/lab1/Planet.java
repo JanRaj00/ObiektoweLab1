@@ -1,25 +1,24 @@
 package agh.cs.lab1;
 
-import org.javatuples.*;
+import org.javatuples.Pair;
 
-import java.io.PrintStream;
 import java.util.*;
 
 public class Planet implements IEnergyChangeObserver, IPositionChangeObserver{
     private final Map<Vector2d, Field> fields = new HashMap<>();
     private final HashMap<Vector2d, Plant> plants= new HashMap<>();
+    private final List<AnimalWithEnergy> animals = new LinkedList<>();
     private final Vector2d lowerLeft;
     private final Vector2d upperRight;
     private final double jungleRatio;
     private final Vector2d jungleLowerLeft;
     private final Vector2d jungleUpperRight;
     private final int plantEnergy;
-    public int numberOfAnimals;
 
 
     public Planet(int width, int height, double jungleRatio, int plantEnergy) {
         this.lowerLeft = new Vector2d(0, 0);
-        this.upperRight = new Vector2d(width, height);
+        this.upperRight = new Vector2d(width-1, height-1);
         this.jungleRatio = jungleRatio;
         int horizontal = (int) (jungleRatio * width);
         int vertical = (int) (jungleRatio * height);
@@ -28,7 +27,17 @@ public class Planet implements IEnergyChangeObserver, IPositionChangeObserver{
         this.jungleLowerLeft = new Vector2d(jungleLowerX, jungleLowerY);
         this.jungleUpperRight = new Vector2d(jungleLowerX + horizontal, jungleLowerY + vertical);
         this.plantEnergy = plantEnergy;
-        this.numberOfAnimals=0;
+        generateMap();
+    }
+
+    public void generateMap(){
+        for(int i=0; i<this.upperRight.x; i++) {
+            for(int j=0; i<this.upperRight.y; j++){
+                Vector2d position = new Vector2d(i, j);
+                Field field = new Field();
+                this.fields.put(position, field);
+            }
+        }
     }
 
     public Vector2d generateRandomVector(boolean inTheJungle) {
@@ -64,7 +73,7 @@ public class Planet implements IEnergyChangeObserver, IPositionChangeObserver{
         for(int i=-1; i<=1; i++){
             for(int j=-1; j<=1; j++){
                 Vector2d newPosition=position.add(new Vector2d(i, j));
-                if(this.fields.get(newPosition)==null){
+                if(this.fields.get(newPosition).getSize()==0){
                     return newPosition;
                 }
             }
@@ -74,7 +83,7 @@ public class Planet implements IEnergyChangeObserver, IPositionChangeObserver{
             int x=rand.nextInt(this.upperRight.x-this.lowerLeft.x);
             int y=rand.nextInt(this.upperRight.y-this.lowerLeft.y);
             Vector2d newPosition = new Vector2d(x, y);
-            if(this.fields.get(newPosition)==null){
+            if(this.fields.get(newPosition).getSize()==0){
                 return newPosition;
             }
         }
@@ -88,10 +97,8 @@ public class Planet implements IEnergyChangeObserver, IPositionChangeObserver{
             position = generateRandomVector(false);
         }
         while (true) {
-            if (plants.get(position) == null) {
-                Plant plant = new Plant(position, this.plantEnergy);
-                plants.put(position, plant);
-                break;
+            if (plants.get(position).getPlantEnergy()==0) {
+                plants.get(position).changePlantEnergy(this.plantEnergy);
             } else {
                 if (inTheJungle) position = generateRandomVector(true);
                 else position = generateRandomVector(false);
@@ -100,40 +107,25 @@ public class Planet implements IEnergyChangeObserver, IPositionChangeObserver{
     }
 
     public void placeAnimal(AnimalWithEnergy animalWithEnergy) {
-        addAnimalToField(animalWithEnergy);
+        Vector2d position = animalWithEnergy.animal.getPosition();
+        this.fields.get(position).addAnimal(animalWithEnergy);
         animalWithEnergy.animal.addPositionObserver(this);
         animalWithEnergy.animal.addEnergyObserver(this);
+        animals.add(animalWithEnergy);
     }
 
-    public void addAnimalToField(AnimalWithEnergy animalWithEnergy){
-        Vector2d position = animalWithEnergy.animal.getPosition();
-        if (fields.get(position) == null) {
-            Field field = new Field(animalWithEnergy);
-            fields.put(position, field);
-        } else {
-            fields.get(position).addAnimal(animalWithEnergy);
-        }
-        numberOfAnimals++;
-    }
-
-    public void removeAnimalFromAField(AnimalWithEnergy animalWithEnergy, Vector2d position){
-        Field field = fields.get(position);
-        field.removeAnimal(animalWithEnergy);
-        if(field.getSize()==0) fields.remove(position, field);
-        numberOfAnimals--;
-    }
 
     public void makeFunerals() {
-        Collection<Field> fieldsValues = fields.values();
-        List<AnimalWithEnergy> allDeadAnimals = new LinkedList<>();
-        for(Field field: fieldsValues){
-            List<AnimalWithEnergy> deadAnimals = field.deadAnimalsOnField();
-            for(AnimalWithEnergy animalWithEnergy: deadAnimals) {
-                allDeadAnimals.add(animalWithEnergy);
+        List<AnimalWithEnergy> deadAnimals=new LinkedList<>();
+        for(AnimalWithEnergy animalWithEnergy: animals){
+            if(!animalWithEnergy.animal.isAlive()){
+                deadAnimals.add(animalWithEnergy);
             }
         }
-        for(AnimalWithEnergy animalWithEnergy: allDeadAnimals){
-            this.removeAnimalFromAField(animalWithEnergy, animalWithEnergy.animal.getPosition());
+        int numberOfDeadAnimals=deadAnimals.size();
+        for(AnimalWithEnergy animalWithEnergy: deadAnimals){
+            animals.remove(animalWithEnergy);
+            fields.get(animalWithEnergy).removeAnimal(animalWithEnergy);
         }
     }
 
@@ -148,34 +140,26 @@ public class Planet implements IEnergyChangeObserver, IPositionChangeObserver{
     }
 
     public void moveAnimals(){
-        Collection<Field> fieldsValues = fields.values();
-        for (Field field: fieldsValues){
-            field.moveAnimals();
+        for(AnimalWithEnergy animalWithEnergy: animals){
+            animalWithEnergy.animal.move();
         }
-    }
-
-    public boolean isOccupied(Vector2d position){
-        if(this.fields.get(position)==null) return false;
-        else return true;
     }
 
     public void feedAnimals() {
         Collection<Plant> plantsValues = plants.values();
-        List<Plant> plantsToRemoves = new LinkedList<>();
         for (Plant plant : plantsValues) {
-            Vector2d position = plant.position;
-            Field field = fields.get(position);
-            if (field.getSize() > 0) {
-                List<AnimalWithEnergy> bestAnimals = field.getBestAnimals();
-                int energyPortion = (int) (plant.getPlantEnergy()/bestAnimals.size());
-                for(AnimalWithEnergy animalWithEnergy: bestAnimals){
-                    animalWithEnergy.animal.changeEnergy(energyPortion);
+            if (plant.getPlantEnergy() != 0) {
+                Vector2d position = plant.position;
+                Field field = fields.get(position);
+                if (field.getSize() > 0) {
+                    List<AnimalWithEnergy> bestAnimals = field.getBestAnimals();
+                    int energyPortion = (int) (plant.getPlantEnergy() / bestAnimals.size());
+                    for (AnimalWithEnergy animalWithEnergy : bestAnimals) {
+                        animalWithEnergy.animal.changeEnergy(energyPortion);
+                    }
+                    plant.changePlantEnergy(0);
                 }
-                plantsToRemoves.add(plant);
             }
-        }
-        for (Plant plant: plantsToRemoves){
-            plants.remove(plant.position, plant);
         }
     }
 
@@ -195,19 +179,19 @@ public class Planet implements IEnergyChangeObserver, IPositionChangeObserver{
         Vector2d position = animal.getPosition();
         AnimalWithEnergy dog = new AnimalWithEnergy(animal, oldEnergy);
         AnimalWithEnergy cat = new AnimalWithEnergy(animal, newEnergy);
-        this.removeAnimalFromAField(dog, position);
-        addAnimalToField(cat);
+        this.fields.get(position).removeAnimal(dog);
+        this.fields.get(position).addAnimal(cat);
     }
 
     @Override
     public void positionChanged(Vector2d oldPosition, Vector2d newPosition, Animal animal){
         AnimalWithEnergy cat = new AnimalWithEnergy(animal, animal.getEnergy());
-        this.removeAnimalFromAField(cat, oldPosition);
-        this.addAnimalToField(cat);
+        this.fields.get(oldPosition).removeAnimal(cat);
+        this.fields.get(newPosition).addAnimal(cat);
     }
 
     //STATYSTYKI
-    public int aliveAnimals(){ return this.numberOfAnimals;}
+    public int aliveAnimals(){ return this.animals.size();}
     public int getSize(){return this.upperRight.x*this.upperRight.y; }
 
 }

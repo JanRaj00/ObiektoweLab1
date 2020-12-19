@@ -1,4 +1,4 @@
-package agh.cs.lab1;
+package agh.cs.lab1.Code;
 
 import com.google.gson.Gson;
 
@@ -19,12 +19,12 @@ public class Configuration {
         this.jungleRatio = 0;
     }
 
-    public static Configuration fromJson(final String parametersPath) throws FileNotFoundException {
+    public static Configuration fromJson(final String parameters) throws FileNotFoundException {
         Gson gson = new Gson();
         try {
-            return gson.fromJson(new FileReader(parametersPath), Configuration.class);
+            return gson.fromJson(new FileReader(parameters), Configuration.class);
         }catch (FileNotFoundException ex){
-            System.out.println("Configuration file not found!\n Path: "+ parametersPath+"\n"+ex.toString());
+            System.out.println("Configuration file not found!\n Path: "+ parameters+"\n"+ex.toString());
             throw ex;
         }
     }

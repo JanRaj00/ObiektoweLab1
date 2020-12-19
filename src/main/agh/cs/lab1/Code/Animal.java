@@ -1,9 +1,9 @@
-package agh.cs.lab1;
+package agh.cs.lab1.Code;
 
 
 import java.util.*;
 
-public class Animal implements IMapElement{
+public class Animal implements IMapElement {
     private Vector2d position;
     private MapDirection orientation=MapDirection.NORTH;
     private Planet map;
@@ -68,7 +68,7 @@ public class Animal implements IMapElement{
             this.orientation=this.orientation.next();
         }
         Vector2d oldPosition = this.getPosition();
-        Vector2d newPosition=this.position.add(this.orientation.toUnitVector());
+        Vector2d newPosition=this.position.add(Objects.requireNonNull(this.orientation.toUnitVector()));
         newPosition=map.canMoveTo(newPosition);
         this.position=newPosition;
         this.positionChanged(oldPosition, newPosition);
@@ -96,6 +96,8 @@ public class Animal implements IMapElement{
             Animal child = new Animal(map, childField, startEnergy, moveEnergy, childEnergy);
         }
     }
+
+    public Genome getGenome() {return this.genome;}
 
     //STATYSTYKI
     public boolean isAlive() {return this.getEnergy()>0;}

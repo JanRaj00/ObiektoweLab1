@@ -1,5 +1,6 @@
-package agh.cs.lab1;
+package agh.cs.lab1.Code;
 
+import java.util.Arrays;
 import java.util.Random;
 import java.util.LinkedList;
 
@@ -49,5 +50,8 @@ public class Genome {
             i++;
         }
         sort(this.genome);
+    }
+    public String toString(){
+        return Arrays.toString(genome);
     }
 }

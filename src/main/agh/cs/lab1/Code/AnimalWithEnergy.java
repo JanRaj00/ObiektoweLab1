@@ -1,4 +1,4 @@
-package agh.cs.lab1;
+package agh.cs.lab1.Code;
 
 
 public class AnimalWithEnergy implements Comparable<AnimalWithEnergy> {

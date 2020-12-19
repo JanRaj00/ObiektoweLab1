@@ -1,7 +1,7 @@
-package agh.cs.lab1;
+package agh.cs.lab1.Code;
 
-public class Plant implements IMapElement{
-    public final Vector2d position;
+public class Plant implements IMapElement {
+    private final Vector2d position;
     private int plantEnergy;
     public Plant(Vector2d pos, int value){
         this.position=pos;

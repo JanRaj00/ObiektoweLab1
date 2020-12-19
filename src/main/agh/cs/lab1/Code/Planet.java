@@ -1,19 +1,22 @@
-package agh.cs.lab1;
+package agh.cs.lab1.Code;
 
 import org.javatuples.Pair;
 
 import java.util.*;
 
-public class Planet implements IEnergyChangeObserver, IPositionChangeObserver{
+public class Planet implements IEnergyChangeObserver, IPositionChangeObserver {
     private final Map<Vector2d, Field> fields = new HashMap<>();
     private final HashMap<Vector2d, Plant> plants= new HashMap<>();
     private final List<AnimalWithEnergy> animals = new LinkedList<>();
+    private final List<AnimalWithEnergy> deadAnimals = new LinkedList<>();
+    private final BestGenome bestGenome = new BestGenome();
     private final Vector2d lowerLeft;
     private final Vector2d upperRight;
     private final double jungleRatio;
     private final Vector2d jungleLowerLeft;
     private final Vector2d jungleUpperRight;
     private final int plantEnergy;
+    private long plantsNumber;
 
 
     public Planet(int width, int height, double jungleRatio, int plantEnergy) {
@@ -27,15 +30,18 @@ public class Planet implements IEnergyChangeObserver, IPositionChangeObserver{
         this.jungleLowerLeft = new Vector2d(jungleLowerX, jungleLowerY);
         this.jungleUpperRight = new Vector2d(jungleLowerX + horizontal, jungleLowerY + vertical);
         this.plantEnergy = plantEnergy;
+        this.plantsNumber=0;
         generateMap();
     }
 
     public void generateMap(){
-        for(int i=0; i<this.upperRight.x; i++) {
-            for(int j=0; i<this.upperRight.y; j++){
+        for(int i=0; i<=this.upperRight.x; i++) {
+            for(int j=0; j<=this.upperRight.y; j++){
                 Vector2d position = new Vector2d(i, j);
                 Field field = new Field();
                 this.fields.put(position, field);
+                Plant plant = new Plant(position, 0);
+                this.plants.put(position, plant);
             }
         }
     }
@@ -73,6 +79,7 @@ public class Planet implements IEnergyChangeObserver, IPositionChangeObserver{
         for(int i=-1; i<=1; i++){
             for(int j=-1; j<=1; j++){
                 Vector2d newPosition=position.add(new Vector2d(i, j));
+                newPosition=canMoveTo(newPosition);
                 if(this.fields.get(newPosition).getSize()==0){
                     return newPosition;
                 }
@@ -99,6 +106,8 @@ public class Planet implements IEnergyChangeObserver, IPositionChangeObserver{
         while (true) {
             if (plants.get(position).getPlantEnergy()==0) {
                 plants.get(position).changePlantEnergy(this.plantEnergy);
+                plantsNumber++;
+                break;
             } else {
                 if (inTheJungle) position = generateRandomVector(true);
                 else position = generateRandomVector(false);
@@ -112,20 +121,21 @@ public class Planet implements IEnergyChangeObserver, IPositionChangeObserver{
         animalWithEnergy.animal.addPositionObserver(this);
         animalWithEnergy.animal.addEnergyObserver(this);
         animals.add(animalWithEnergy);
+        bestGenome.addGenome(animalWithEnergy.animal.getGenome());
     }
 
 
     public void makeFunerals() {
-        List<AnimalWithEnergy> deadAnimals=new LinkedList<>();
+        List<AnimalWithEnergy> currentDeadAnimals=new LinkedList<>();
         for(AnimalWithEnergy animalWithEnergy: animals){
             if(!animalWithEnergy.animal.isAlive()){
-                deadAnimals.add(animalWithEnergy);
+                currentDeadAnimals.add(animalWithEnergy);
             }
         }
-        int numberOfDeadAnimals=deadAnimals.size();
-        for(AnimalWithEnergy animalWithEnergy: deadAnimals){
+        for(AnimalWithEnergy animalWithEnergy: currentDeadAnimals){
             animals.remove(animalWithEnergy);
-            fields.get(animalWithEnergy).removeAnimal(animalWithEnergy);
+            fields.get(animalWithEnergy.animal.getPosition()).removeAnimal(animalWithEnergy);
+            deadAnimals.add(animalWithEnergy);
         }
     }
 
@@ -149,7 +159,7 @@ public class Planet implements IEnergyChangeObserver, IPositionChangeObserver{
         Collection<Plant> plantsValues = plants.values();
         for (Plant plant : plantsValues) {
             if (plant.getPlantEnergy() != 0) {
-                Vector2d position = plant.position;
+                Vector2d position = plant.getPosition();
                 Field field = fields.get(position);
                 if (field.getSize() > 0) {
                     List<AnimalWithEnergy> bestAnimals = field.getBestAnimals();
@@ -158,6 +168,7 @@ public class Planet implements IEnergyChangeObserver, IPositionChangeObserver{
                         animalWithEnergy.animal.changeEnergy(energyPortion);
                     }
                     plant.changePlantEnergy(0);
+                    plantsNumber--;
                 }
             }
         }
@@ -190,8 +201,54 @@ public class Planet implements IEnergyChangeObserver, IPositionChangeObserver{
         this.fields.get(newPosition).addAnimal(cat);
     }
 
+    //GETTERY
+    public Vector2d getUpperRight(){return this.upperRight;}
+    public double getJungleRatio(){return this.jungleRatio;}
+    public int getTypeOfElement(int i, int j){
+        Vector2d position = new Vector2d(i, j);
+        if(this.fields.get(position).getSize()>=1) return 0; //zwierze
+        else if(this.plants.get(position).getPlantEnergy()!=0) return 1; //wtedy roslina
+        else{
+            if(position.follows(this.jungleLowerLeft) && position.precedes(this.jungleUpperRight)) return 2;
+            else return 3;
+        }
+    }
     //STATYSTYKI
-    public int aliveAnimals(){ return this.animals.size();}
-    public int getSize(){return this.upperRight.x*this.upperRight.y; }
+    public long getPlantsNumber(){return plantsNumber;}
+    public long aliveAnimals(){ return this.animals.size();}
+    public long getNumberOfDeadAnimals(){return deadAnimals.size();}
+    public long getAverageEnergy(){
+        if(animals.size()==0) return 0;
+        else{
+            long sum=0;
+            for(AnimalWithEnergy animalWithEnergy: animals){
+               sum+=(long)(animalWithEnergy.animal.getEnergy());
+            }
+            return (long) (sum/animals.size());
+        }
+    }
+    public long getAverageAgeOfDeadAnimals(){
+        if(deadAnimals.size()==0) return -5;
+        else{
+            long sum=0;
+            for(AnimalWithEnergy animalWithEnergy: deadAnimals){
+                sum+=(long)(animalWithEnergy.animal.getAge());
+            }
+            return (long) (sum/deadAnimals.size());
+        }
+    }
+    public long getAverageChildrenNumber(){
+        if(animals.size()==0) return 0;
+        else{
+            long sum=0;
+            for(AnimalWithEnergy animalWithEnergy: animals){
+                sum+=(long)(animalWithEnergy.animal.getChildrenNumber());
+            }
+            return (long) (sum/animals.size());
+        }
+    }
+    public Genome getBestGenome() {
+        return bestGenome.getBestGenome();
+    }
 
 }

@@ -1,10 +1,11 @@
-package agh.cs.lab1;
+package agh.cs.lab1.Code;
 
 import org.javatuples.Pair;
+
 import java.util.*;
 
 public class Field {
-    private SortedSet <AnimalWithEnergy> animals = new TreeSet<AnimalWithEnergy>();
+    private final SortedSet <AnimalWithEnergy> animals;
     public Field(){
         this.animals=new TreeSet<AnimalWithEnergy>(); //jezeli stawiamy samo zwierze
     }

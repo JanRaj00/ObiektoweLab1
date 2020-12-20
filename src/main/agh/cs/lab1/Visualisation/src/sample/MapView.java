@@ -28,17 +28,21 @@ public class MapView{
         this.fieldHeight=(this.height/this.planet.getUpperRight().y);
     }
 
-    public void drawMap(GraphicsContext gc){
+    public void drawMap(GraphicsContext gc) {
         int x = planet.getUpperRight().x;
         int y = planet.getUpperRight().y;
-        for(int i=0; i<=x; i++){
-            for(int j=0; j<=y; j++){
+        for (int i = 0; i <= x; i++) {
+            for (int j = 0; j <= y; j++) {
                 int typeOfField = planet.getTypeOfElement(i, j);
-                if(typeOfField==0){ gc.setFill(Color.BROWN); }
-                else if(typeOfField==1) gc.setFill(Color.GREEN);
-                else if(typeOfField==2) gc.setFill(Color.BLUE);
-                else gc.setFill(Color.LIGHTSLATEGRAY);
-                gc.fillRect(this.fieldWidth*i, this.fieldHeight*j, this.fieldWidth, this.fieldHeight);
+                if (typeOfField == 0) {
+                    gc.setFill(Color.BROWN);
+                    gc.fillOval(this.fieldWidth * i, this.fieldHeight * j, this.fieldWidth, this.fieldHeight);
+                } else {
+                    if (typeOfField == 1) gc.setFill(Color.GREEN);
+                    else if (typeOfField == 2) gc.setFill(Color.BLUE);
+                    else gc.setFill(Color.YELLOW);
+                    gc.fillRect(this.fieldWidth * i, this.fieldHeight * j, this.fieldWidth, this.fieldHeight);
+                }
             }
         }
     }

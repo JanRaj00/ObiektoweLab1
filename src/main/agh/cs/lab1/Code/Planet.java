@@ -15,7 +15,6 @@ public class Planet implements IEnergyChangeObserver, IPositionChangeObserver {
     private final Vector2d jungleLowerLeft;
     private final Vector2d jungleUpperRight;
     private final int plantEnergy;
-    private long numberOfAnimals;
     private long plantsNumber;
     private long deadAnimals;
     private long sumOfAgeOfDead;
@@ -33,7 +32,6 @@ public class Planet implements IEnergyChangeObserver, IPositionChangeObserver {
         this.jungleUpperRight = new Vector2d(jungleLowerX + horizontal, jungleLowerY + vertical);
         this.plantEnergy = plantEnergy;
         this.plantsNumber=0;
-        this.numberOfAnimals=0;
         this.deadAnimals=0;
         this.sumOfAgeOfDead=0;
         generateMap();
@@ -128,7 +126,6 @@ public class Planet implements IEnergyChangeObserver, IPositionChangeObserver {
         animalWithEnergy.animal.addPositionObserver(this);
         animalWithEnergy.animal.addEnergyObserver(this);
         animals.add(animalWithEnergy);
-        numberOfAnimals++;
         bestGenome.addGenome(animalWithEnergy.animal.getGenome());
     }
 
@@ -144,7 +141,6 @@ public class Planet implements IEnergyChangeObserver, IPositionChangeObserver {
             fields.get(animalWithEnergy.animal.getPosition()).removeAnimal(animalWithEnergy);
             animals.remove(animalWithEnergy);
             deadAnimals++;
-            numberOfAnimals--;
             sumOfAgeOfDead+=animalWithEnergy.animal.getAge();
         }
     }
@@ -215,7 +211,8 @@ public class Planet implements IEnergyChangeObserver, IPositionChangeObserver {
         this.fields.get(newPosition).addAnimal(cat);
     }
 
-    //GETTERY
+                        //GETTERY
+
     public Vector2d getUpperRight(){return this.upperRight;}
     public double getJungleRatio(){return this.jungleRatio;}
     public int getTypeOfElement(int i, int j){
@@ -236,10 +233,12 @@ public class Planet implements IEnergyChangeObserver, IPositionChangeObserver {
         Vector2d position = new Vector2d(x, y);
         return fields.get(position).getBestAnimal();
     }
-    //STATYSTYKI
+
+                        //STATYSTYKI
+
     public long getPlantsNumber(){return plantsNumber;}
 
-    public long aliveAnimals(){ return numberOfAnimals;}
+    public long aliveAnimals(){ return animals.size();}
     public long getNumberOfDeadAnimals(){return deadAnimals;}
     public long getAverageEnergy(){
         if(animals.size()==0) return 0;

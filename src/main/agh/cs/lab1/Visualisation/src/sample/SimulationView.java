@@ -5,15 +5,15 @@ import agh.cs.lab1.Code.SimulationEngine;
 import javafx.animation.AnimationTimer;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.SplitPane;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class SimulationView extends Stage {
@@ -40,6 +40,8 @@ public class SimulationView extends Stage {
         Button runButton = new Button("Run");
         Button stopButton = new Button("Stop");
         Button saveToFileButton = new Button("Save to file");
+        runButton.setBackground(new Background(new BackgroundFill(Color.DARKSALMON, CornerRadii.EMPTY, Insets.EMPTY)));
+        stopButton.setBackground(new Background(new BackgroundFill(Color.AQUAMARINE, CornerRadii.EMPTY, Insets.EMPTY)));
         runButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
@@ -62,10 +64,13 @@ public class SimulationView extends Stage {
                 new AnimalInfo(animal);
             }
         });
-        VBox buttons = new VBox(runButton, stopButton);
-        buttons.setLayoutY(200);
-        buttons.setLayoutX(200);
+        HBox buttons = new HBox(runButton, stopButton);
+        buttons.setPadding(new Insets(200, 200, 200, 200));
+        stats.setGridLinesVisible(true);
+        stats.setBackground(new Background(new BackgroundFill(Color.LIGHTGREY, CornerRadii.EMPTY, Insets.EMPTY)));
         right.getChildren().addAll(stats, buttons);
+        right.setBorder(Border.EMPTY);
+        right.setBackground(new Background(new BackgroundFill(Color.MISTYROSE, CornerRadii.EMPTY, Insets.EMPTY)));
         root.getItems().add(right);
         theStage.show();
     }

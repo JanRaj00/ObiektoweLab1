@@ -3,11 +3,13 @@ package agh.cs.lab1.Code;
 public class SimulationEngine{
     private final Planet map;
     private final Configuration configuration;
+    private long numberOFEpoch;
 
     public SimulationEngine(Configuration config){
         this.configuration=config;
         this.map = new Planet(config.width, config.height, config.jungleRatio, config.plantEnergy);
-        run();
+        numberOFEpoch=0;
+        this.run();
     }
     public void run(){
         int numberOfStartAnimals = configuration.startAnimals;
@@ -22,16 +24,6 @@ public class SimulationEngine{
             }
             numberOfStartAnimals--;
         }
-        int p=200;
-        while(p>0) {
-            nextDay();
-            p--;
-        }
-        System.out.println(map.aliveAnimals());
-        System.out.println(map.getAverageEnergy());
-        System.out.println(map.getNumberOfDeadAnimals());
-        System.out.println(map.getAverageAgeOfDeadAnimals());
-        System.out.println(map.getBestGenome().toString());
     }
     public void nextDay(){
         this.map.makeFunerals();
@@ -40,8 +32,8 @@ public class SimulationEngine{
         this.map.procreateAnimal();
         this.map.placePlant(false);
         this.map.placePlant(true);
+        numberOFEpoch++;
     }
-    public Planet getPlanet(){
-        return this.map;
-    }
+    public Planet getPlanet() {return this.map;}
+    public long getNumberOFEpoch(){return this.numberOFEpoch;};
 }

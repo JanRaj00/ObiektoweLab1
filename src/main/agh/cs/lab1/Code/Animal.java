@@ -29,6 +29,7 @@ public class Animal implements IMapElement {
         this.moveEnergy=moveEnergy;
         this.number=nextNumber;
         nextNumber++;
+        this.age=0;
         this.map.placeAnimal(new AnimalWithEnergy(this, this.energy));
     }
 

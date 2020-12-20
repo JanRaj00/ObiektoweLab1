@@ -6,15 +6,23 @@ import java.util.*;
 
 public class Field {
     private final SortedSet <AnimalWithEnergy> animals;
-    public Field(){
-        this.animals=new TreeSet<AnimalWithEnergy>(); //jezeli stawiamy samo zwierze
+    private int numberOfAnimals;
+    public Field() {
+        this.animals = new TreeSet<AnimalWithEnergy>();
+        numberOfAnimals = 0;
     }
 
-    public void addAnimal(AnimalWithEnergy animalWithEnergy){ this.animals.add(animalWithEnergy); }
+    public void addAnimal(AnimalWithEnergy animalWithEnergy){
+        this.animals.add(animalWithEnergy);
+        numberOfAnimals++;
+    }
 
-    public void removeAnimal(AnimalWithEnergy animalWithEnergy){ this.animals.remove(animalWithEnergy);}
+    public void removeAnimal(AnimalWithEnergy animalWithEnergy){
+        this.animals.remove(animalWithEnergy);
+        numberOfAnimals--;
+    }
 
-    public int getSize(){ return this.animals.size(); }
+    public int getSize(){ return numberOfAnimals;}
 
     public List<AnimalWithEnergy> getBestAnimals(){
         int bestEnergy = this.animals.first().animal.getEnergy();

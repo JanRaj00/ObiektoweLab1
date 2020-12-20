@@ -8,7 +8,6 @@ public class Planet implements IEnergyChangeObserver, IPositionChangeObserver {
     private final Map<Vector2d, Field> fields = new HashMap<>();
     private final HashMap<Vector2d, Plant> plants= new HashMap<>();
     private final List<AnimalWithEnergy> animals = new LinkedList<>();
-    private final List<AnimalWithEnergy> deadAnimals = new LinkedList<>();
     private final BestGenome bestGenome = new BestGenome();
     private final Vector2d lowerLeft;
     private final Vector2d upperRight;
@@ -16,7 +15,10 @@ public class Planet implements IEnergyChangeObserver, IPositionChangeObserver {
     private final Vector2d jungleLowerLeft;
     private final Vector2d jungleUpperRight;
     private final int plantEnergy;
+    private long numberOfAnimals;
     private long plantsNumber;
+    private long deadAnimals;
+    private long sumOfAgeOfDead;
 
 
     public Planet(int width, int height, double jungleRatio, int plantEnergy) {
@@ -31,6 +33,9 @@ public class Planet implements IEnergyChangeObserver, IPositionChangeObserver {
         this.jungleUpperRight = new Vector2d(jungleLowerX + horizontal, jungleLowerY + vertical);
         this.plantEnergy = plantEnergy;
         this.plantsNumber=0;
+        this.numberOfAnimals=0;
+        this.deadAnimals=0;
+        this.sumOfAgeOfDead=0;
         generateMap();
     }
 
@@ -103,7 +108,8 @@ public class Planet implements IEnergyChangeObserver, IPositionChangeObserver {
         } else {
             position = generateRandomVector(false);
         }
-        while (true) {
+        int p=100;
+        while (p>0) {
             if (plants.get(position).getPlantEnergy()==0) {
                 plants.get(position).changePlantEnergy(this.plantEnergy);
                 plantsNumber++;
@@ -112,6 +118,7 @@ public class Planet implements IEnergyChangeObserver, IPositionChangeObserver {
                 if (inTheJungle) position = generateRandomVector(true);
                 else position = generateRandomVector(false);
             }
+            p--;
         }
     }
 
@@ -121,6 +128,7 @@ public class Planet implements IEnergyChangeObserver, IPositionChangeObserver {
         animalWithEnergy.animal.addPositionObserver(this);
         animalWithEnergy.animal.addEnergyObserver(this);
         animals.add(animalWithEnergy);
+        numberOfAnimals++;
         bestGenome.addGenome(animalWithEnergy.animal.getGenome());
     }
 
@@ -133,9 +141,11 @@ public class Planet implements IEnergyChangeObserver, IPositionChangeObserver {
             }
         }
         for(AnimalWithEnergy animalWithEnergy: currentDeadAnimals){
-            animals.remove(animalWithEnergy);
             fields.get(animalWithEnergy.animal.getPosition()).removeAnimal(animalWithEnergy);
-            deadAnimals.add(animalWithEnergy);
+            animals.remove(animalWithEnergy);
+            deadAnimals++;
+            numberOfAnimals--;
+            sumOfAgeOfDead+=animalWithEnergy.animal.getAge();
         }
     }
 
@@ -150,8 +160,9 @@ public class Planet implements IEnergyChangeObserver, IPositionChangeObserver {
     }
 
     public void moveAnimals(){
-        for(AnimalWithEnergy animalWithEnergy: animals){
-            animalWithEnergy.animal.move();
+        if(animals.size()==0) return;
+        for(AnimalWithEnergy animal: animals){
+            animal.animal.move();
         }
     }
 
@@ -174,12 +185,15 @@ public class Planet implements IEnergyChangeObserver, IPositionChangeObserver {
         }
     }
 
-    public void procreateAnimal(){
-        Collection<Field> fieldsValues = fields.values();
-        for (Field field: fieldsValues){
-            if(field.getSize()>1){
-                Pair<AnimalWithEnergy, AnimalWithEnergy> parents=field.getParents();
-                parents.getValue0().animal.procreate(parents.getValue1().animal);
+    public void procreateAnimal() {
+        if (animals.size() == 0) return;
+        else {
+            Collection<Field> fieldsValues = fields.values();
+            for (Field field : fieldsValues) {
+                if (field.getSize() > 1) {
+                    Pair<AnimalWithEnergy, AnimalWithEnergy> parents = field.getParents();
+                    parents.getValue0().animal.procreate(parents.getValue1().animal);
+                }
             }
         }
     }
@@ -206,17 +220,31 @@ public class Planet implements IEnergyChangeObserver, IPositionChangeObserver {
     public double getJungleRatio(){return this.jungleRatio;}
     public int getTypeOfElement(int i, int j){
         Vector2d position = new Vector2d(i, j);
-        if(this.fields.get(position).getSize()>=1) return 0; //zwierze
-        else if(this.plants.get(position).getPlantEnergy()!=0) return 1; //wtedy roslina
+        if(this.fields.get(position).getSize()>0){
+            return 0;
+        }
         else{
-            if(position.follows(this.jungleLowerLeft) && position.precedes(this.jungleUpperRight)) return 2;
-            else return 3;
+            if(this.plants.get(position).getPlantEnergy()>0) return 1;
+            else{
+                if(position.follows(jungleLowerLeft) && position.precedes(jungleUpperRight)) return 2;
+                else return 3;
+            }
         }
     }
     //STATYSTYKI
     public long getPlantsNumber(){return plantsNumber;}
-    public long aliveAnimals(){ return this.animals.size();}
-    public long getNumberOfDeadAnimals(){return deadAnimals.size();}
+    /*public long aliveAnimals(){
+        long num=0;
+        Collection<Field> fieldsValues = fields.values();
+        for (Field field : fieldsValues) {
+            num+=field.getSize();
+        }
+        return num;
+    }
+     */
+
+    public long aliveAnimals(){ return numberOfAnimals;}
+    public long getNumberOfDeadAnimals(){return deadAnimals;}
     public long getAverageEnergy(){
         if(animals.size()==0) return 0;
         else{
@@ -228,13 +256,9 @@ public class Planet implements IEnergyChangeObserver, IPositionChangeObserver {
         }
     }
     public long getAverageAgeOfDeadAnimals(){
-        if(deadAnimals.size()==0) return -5;
+        if(deadAnimals==0) return 0;
         else{
-            long sum=0;
-            for(AnimalWithEnergy animalWithEnergy: deadAnimals){
-                sum+=(long)(animalWithEnergy.animal.getAge());
-            }
-            return (long) (sum/deadAnimals.size());
+            return (long) sumOfAgeOfDead/deadAnimals;
         }
     }
     public long getAverageChildrenNumber(){

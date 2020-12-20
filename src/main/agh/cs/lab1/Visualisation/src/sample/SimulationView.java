@@ -1,7 +1,6 @@
 package agh.cs.lab1.Visualisation.src.sample;
 
 import agh.cs.lab1.Code.Animal;
-import agh.cs.lab1.Code.Configuration;
 import agh.cs.lab1.Code.SimulationEngine;
 import javafx.animation.AnimationTimer;
 import javafx.event.ActionEvent;
@@ -13,17 +12,18 @@ import javafx.scene.control.Button;
 import javafx.scene.control.SplitPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class SimulationView extends Stage {
-    public SimulationView(Configuration configuration) {
-        SimulationEngine simulationEngine = new SimulationEngine(configuration);
+    public SimulationView(SimulationEngine simulationEngine) {
         Stage theStage = new Stage();
         theStage.setTitle("Evolution");
         SplitPane root = new SplitPane();
-        Canvas canvas = new Canvas(800, 650);
+        Canvas canvas = new Canvas(800, 700);
         GraphicsContext gc = canvas.getGraphicsContext2D();
+        Pane right = new Pane();
         GridPane stats = new GridPane();
         root.getItems().add(canvas);
         Scene theScene = new Scene(root);
@@ -39,10 +39,7 @@ public class SimulationView extends Stage {
 
         Button runButton = new Button("Run");
         Button stopButton = new Button("Stop");
-        runButton.setPrefWidth(120);
-        runButton.setPrefHeight(300);
-        stopButton.setPrefWidth(120);
-        stopButton.setPrefHeight(300);
+        Button saveToFileButton = new Button("Save to file");
         runButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
@@ -66,8 +63,10 @@ public class SimulationView extends Stage {
             }
         });
         VBox buttons = new VBox(runButton, stopButton);
-        buttons.setPrefWidth(120);
-        root.getItems().addAll(buttons, stats);
+        buttons.setLayoutY(200);
+        buttons.setLayoutX(200);
+        right.getChildren().addAll(stats, buttons);
+        root.getItems().add(right);
         theStage.show();
     }
 }

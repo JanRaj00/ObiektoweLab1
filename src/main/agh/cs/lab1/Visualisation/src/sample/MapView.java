@@ -73,6 +73,7 @@ public class MapView{
         stats(statsPane);
     }
 
+
     public Animal getAnimalAtPosition(int x, int y){
         return planet.getBestFromField(x, y);
     }

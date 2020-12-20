@@ -1,6 +1,7 @@
 package agh.cs.lab1.Visualisation.src.sample;
 
 import agh.cs.lab1.Code.Configuration;
+import agh.cs.lab1.Code.SimulationEngine;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -12,7 +13,8 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
         try {
             final Configuration configuration = Configuration.fromJson(Main.parameter);
-            new SimulationView(configuration);
+            new SimulationView(new SimulationEngine(configuration));
+            new SimulationView(new SimulationEngine(configuration));
         } catch (FileNotFoundException exception) {
             System.out.println("File doesnt exist");
         }

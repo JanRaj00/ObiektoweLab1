@@ -55,4 +55,8 @@ public class Field {
             return new Pair<>(parent1, parent2);
         }
     }
+
+    public Animal getBestAnimal(){
+        return this.animals.first().animal;
+    }
 }

@@ -1,6 +1,7 @@
 package agh.cs.lab1.Visualisation.src.sample;
 
 
+import agh.cs.lab1.Code.Animal;
 import agh.cs.lab1.Code.Planet;
 import agh.cs.lab1.Code.SimulationEngine;
 import javafx.scene.canvas.Canvas;
@@ -72,6 +73,15 @@ public class MapView{
         stats(statsPane);
     }
 
+    public Animal getAnimalAtPosition(int x, int y){
+        return planet.getBestFromField(x, y);
+    }
 
+    public double getFieldWidth(){
+        return this.fieldWidth;
+    }
 
+    public double getFieldHeight(){
+        return this.fieldHeight;
+    }
 }

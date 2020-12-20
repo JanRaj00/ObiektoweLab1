@@ -231,17 +231,13 @@ public class Planet implements IEnergyChangeObserver, IPositionChangeObserver {
             }
         }
     }
+
+    public Animal getBestFromField(int x, int y){
+        Vector2d position = new Vector2d(x, y);
+        return fields.get(position).getBestAnimal();
+    }
     //STATYSTYKI
     public long getPlantsNumber(){return plantsNumber;}
-    /*public long aliveAnimals(){
-        long num=0;
-        Collection<Field> fieldsValues = fields.values();
-        for (Field field : fieldsValues) {
-            num+=field.getSize();
-        }
-        return num;
-    }
-     */
 
     public long aliveAnimals(){ return numberOfAnimals;}
     public long getNumberOfDeadAnimals(){return deadAnimals;}

@@ -14,9 +14,9 @@ public class Main extends Application {
         try {
             final Configuration configuration = Configuration.fromJson(Main.parameter);
             new SimulationView(new SimulationEngine(configuration));
-            new SimulationView(new SimulationEngine(configuration));
+            if(configuration.twoMaps) new SimulationView(new SimulationEngine(configuration));
         } catch (FileNotFoundException exception) {
-            System.out.println("File doesnt exist");
+            System.out.println("File doesn't exist");
         }
     }
 

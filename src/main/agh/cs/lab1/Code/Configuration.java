@@ -12,11 +12,13 @@ public class Configuration {
     public final int startAnimals;
     public final double jungleRatio;
     public final int plantEnergy;
+    public final boolean twoMaps;
 
 
     Configuration(){
         this.width = this.height = this.startEnergy = this.moveEnergy = this.startAnimals = this.plantEnergy = 0;
         this.jungleRatio = 0;
+        twoMaps=false;
     }
 
     public static Configuration fromJson(final String parameters) throws FileNotFoundException {
@@ -29,17 +31,4 @@ public class Configuration {
         }
     }
 
-    @Override
-    public String toString() {
-        return "Configuration{" +
-                "width=" + width +
-                ", height=" + height +
-                ", startEnergy=" + startEnergy +
-                ", moveEnergy=" + moveEnergy +
-                ", jungleRatio=" + jungleRatio +
-                ", startAnimals="+ startAnimals +
-                ", jungleRatio=" + jungleRatio +
-                ", plantEnergy=" + plantEnergy +
-                '}';
-    }
 }

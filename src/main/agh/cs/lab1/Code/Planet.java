@@ -52,7 +52,7 @@ public class Planet implements IEnergyChangeObserver, IPositionChangeObserver {
     public Vector2d generateRandomVector(boolean inTheJungle) {
         Random rand = new Random();
         if (inTheJungle) {
-            int xRange = this.jungleUpperRight.x - this.jungleLowerLeft.x;
+            int xRange = this.jungleUpperRight.x - this.jungleLowerLeft.x+1;
             int yRange = this.jungleUpperRight.y - this.jungleLowerLeft.y;
             return new Vector2d(rand.nextInt(xRange) + jungleLowerLeft.x,
                     rand.nextInt(yRange) + jungleLowerLeft.y);
@@ -106,7 +106,7 @@ public class Planet implements IEnergyChangeObserver, IPositionChangeObserver {
         } else {
             position = generateRandomVector(false);
         }
-        int p=100;
+        int p=400; //gdyby miało trwac w nieskonczonosc
         while (p>0) {
             if (plants.get(position).getPlantEnergy()==0) {
                 plants.get(position).changePlantEnergy(this.plantEnergy);

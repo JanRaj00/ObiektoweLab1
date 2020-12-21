@@ -2,6 +2,7 @@ package agh.cs.lab1.Visualisation.src.sample;
 
 import agh.cs.lab1.Code.Animal;
 import agh.cs.lab1.Code.SimulationEngine;
+import com.google.gson.stream.JsonWriter;
 import javafx.animation.AnimationTimer;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -15,6 +16,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class SimulationView extends Stage {
     public SimulationView(SimulationEngine simulationEngine) {
@@ -55,6 +59,29 @@ public class SimulationView extends Stage {
                 myTimer.stop();
             }
         });
+
+        saveToFileButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                String[] statistics = mapView.statisticsInString();
+                try {
+                    JsonWriter writer = new JsonWriter(new FileWriter("output.json"));
+                    writer.beginObject();
+                    writer.name("Statistics");
+                    writer.beginArray();
+                    writer.beginObject(); writer.name("Epoch: ").value(statistics[0]); writer.endObject();
+                    writer.beginObject(); writer.name("Number of Animals: ").value(statistics[1]); writer.endObject();
+                    writer.beginObject(); writer.name("Average Energy: ").value(statistics[2]); writer.endObject();
+                    writer.beginObject(); writer.name("Dead Animals: ").value(statistics[3]); writer.endObject();
+                    writer.beginObject(); writer.name("Average Age of Dead: ").value(statistics[4]); writer.endObject();
+                    writer.beginObject(); writer.name("Most Popular Genotype: ").value(statistics[5]); writer.endObject();
+                    writer.beginObject(); writer.name("Number of Plants: ").value(statistics[6]); writer.endObject();
+                    writer.endArray(); writer.endObject(); writer.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
         canvas.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
@@ -64,7 +91,7 @@ public class SimulationView extends Stage {
                 new AnimalInfo(animal);
             }
         });
-        HBox buttons = new HBox(runButton, stopButton);
+        HBox buttons = new HBox(runButton, stopButton, saveToFileButton);
         buttons.setPadding(new Insets(200, 200, 200, 200));
         stats.setGridLinesVisible(true);
         stats.setBackground(new Background(new BackgroundFill(Color.LIGHTGREY, CornerRadii.EMPTY, Insets.EMPTY)));

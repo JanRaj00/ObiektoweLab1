@@ -19,6 +19,8 @@ public class MapView{
     private Planet planet;
     private SimulationEngine simulationEngine;
 
+
+
     public MapView(SimulationEngine simulationEngine, Canvas canvas){
         this.simulationEngine=simulationEngine;
         this.planet=simulationEngine.getPlanet();
@@ -47,7 +49,7 @@ public class MapView{
         }
     }
 
-    public void stats(GridPane statsPane){
+    public String[] statisticsInString(){
         String AnimalNum = Long.toString(planet.aliveAnimals());
         String AvEnergy = Long.toString(planet.getAverageEnergy());
         String DeadAnimals = Long.toString(planet.getNumberOfDeadAnimals());
@@ -55,6 +57,12 @@ public class MapView{
         String bestGenome = planet.getBestGenome().toString();
         String numberOfPlants = Long.toString(planet.getPlantsNumber());
         String numberOfEpoch = Long.toString(this.simulationEngine.getNumberOFEpoch());
+        String[] statistics = {numberOfEpoch, AnimalNum, AvEnergy, DeadAnimals, AvAgeDead, bestGenome, numberOfPlants};
+        return statistics;
+    }
+
+    public void stats(GridPane statsPane){
+        String[] statistics = statisticsInString();
         statsPane.getChildren().clear();
         statsPane.add(new Text("Epoch: "), 0, 0);
         statsPane.add(new Text("Number of Animals: "), 0, 1);
@@ -63,13 +71,9 @@ public class MapView{
         statsPane.add(new Text("Average Age of Dead Animal:"), 0, 4);
         statsPane.add(new Text("Most Popular Genotype: "), 0, 5);
         statsPane.add(new Text("Number of Plants"), 0, 6);
-        statsPane.add(new Text(numberOfEpoch), 1, 0);
-        statsPane.add(new Text(AnimalNum), 1, 1);
-        statsPane.add(new Text(AvEnergy), 1, 2);
-        statsPane.add(new Text(DeadAnimals), 1, 3);
-        statsPane.add(new Text(AvAgeDead), 1, 4);
-        statsPane.add(new Text(bestGenome), 1, 5);
-        statsPane.add(new Text(numberOfPlants), 1, 6);
+        for(int i=0; i<7; i++){
+            statsPane.add(new Text(statistics[i]), 1, i);
+        }
     }
 
     public void run(GraphicsContext gc, GridPane statsPane){
@@ -89,4 +93,6 @@ public class MapView{
     public double getFieldHeight(){
         return this.fieldHeight;
     }
+
+
 }

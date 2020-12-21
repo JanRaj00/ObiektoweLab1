@@ -88,7 +88,7 @@ public class SimulationView extends Stage {
                 int x = (int) (mouseEvent.getX()/mapView.getFieldWidth());
                 int y = (int) (mouseEvent.getY()/mapView.getFieldHeight());
                 Animal animal = mapView.getAnimalAtPosition(x, y);
-                new AnimalInfo(animal);
+                new AnimalInfo(animal, simulationEngine);
             }
         });
         HBox buttons = new HBox(runButton, stopButton, saveToFileButton);

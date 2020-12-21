@@ -95,8 +95,12 @@ public class Animal implements IMapElement {
             this.changeEnergy((-1)*firstEnergy);
             secondParent.changeEnergy((-1)*secondEnergy);
             Animal child = new Animal(map, childField, startEnergy, moveEnergy, childEnergy);
+            this.addChildren();
+            secondParent.addChildren();
         }
     }
+
+    public void addChildren(){ this.childrenNumber++;}
 
     public Genome getGenome() {return this.genome;}
 

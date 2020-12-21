@@ -37,7 +37,13 @@ public class MapView{
             for (int j = 0; j <= y; j++) {
                 int typeOfField = planet.getTypeOfElement(i, j);
                 if (typeOfField == 0) {
-                    gc.setFill(Color.BROWN);
+                    int colorInt = planet.getBestFromField(i, j).getEnergy();
+                    if(colorInt<50) gc.setFill(Color.BROWN);
+                    else if(colorInt<100) gc.setFill(Color.LIGHTGREY);
+                    else if(colorInt<200) gc.setFill(Color.MISTYROSE);
+                    else if(colorInt<300) gc.setFill(Color.CRIMSON);
+                    else if(colorInt<500) gc.setFill(Color.ALICEBLUE);
+                    else if(colorInt<1000) gc.setFill(Color.CADETBLUE);
                     gc.fillOval(this.fieldWidth * i, this.fieldHeight * j, this.fieldWidth, this.fieldHeight);
                 } else {
                     if (typeOfField == 1) gc.setFill(Color.GREEN);

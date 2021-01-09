@@ -1,4 +1,4 @@
-package agh.cs.lab1.Visualisation.src.sample;
+package agh.cs.lab1.Visualisation.src.sample;   // src w nazwie pakietu? Pakiety powinny zawierać tylko źródła
 
 import agh.cs.lab1.Code.Animal;
 import agh.cs.lab1.Code.SimulationEngine;

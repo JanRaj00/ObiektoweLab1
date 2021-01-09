@@ -11,15 +11,15 @@ public class Genome {
     public Genome(){
         for (int i=0; i<8; i++) this.genome[i]=i;
 
-        Random rand=new Random();
+        Random rand=new Random();   // nowy obiekt co wywołanie
         for (int i = 8; i < 32; i++) {
             this.genome[i]=rand.nextInt(8);
         }
         sort(this.genome);
     }
 
-    public int getRand(){
-        Random rand=new Random();
+    public int getRand(){   // opłaci się oszczędność dwóch liter?
+        Random rand=new Random();   // nowy obiekt co wywołanie
         return this.genome[rand.nextInt(32)]; //zwroc wartosc z wylosowanej pozycji
     }
 

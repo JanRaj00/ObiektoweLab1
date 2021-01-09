@@ -1,4 +1,4 @@
 package agh.cs.lab1.Visualisation.src.sample;
 
-public class Controller {
+public class Controller {   // pusto tu
 }

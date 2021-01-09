@@ -52,7 +52,7 @@ public enum MapDirection {
 
     public Vector2d toUnitVector(){
         switch(this){
-            case NORTH: return new Vector2d(0, 1);
+            case NORTH: return new Vector2d(0, 1);  // nowy wektor co wywołanie
             case NORTHEAST: return new Vector2d(1, 1);
             case EAST: return new Vector2d(1,0);
             case SOUTHEAST: return new Vector2d(1, -1);

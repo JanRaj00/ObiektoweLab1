@@ -1,7 +1,7 @@
 package agh.cs.lab1.Code;
 
 
-public class AnimalWithEnergy implements Comparable<AnimalWithEnergy> {
+public class AnimalWithEnergy implements Comparable<AnimalWithEnergy> { // nie lepiej dodać energię do animala? Albo przynajmniej dziedziczyć?
     public final Animal animal;
     public final int energy;
 

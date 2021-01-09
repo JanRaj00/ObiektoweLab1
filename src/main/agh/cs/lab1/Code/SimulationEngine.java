@@ -3,7 +3,7 @@ package agh.cs.lab1.Code;
 public class SimulationEngine{
     private final Planet map;
     private final Configuration configuration;
-    private long numberOFEpoch;
+    private long numberOFEpoch; // wielkie F powoduje, że to wygląda jak skrót
 
     public SimulationEngine(Configuration config){
         this.configuration=config;

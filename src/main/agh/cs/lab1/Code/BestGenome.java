@@ -3,7 +3,7 @@ package agh.cs.lab1.Code;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BestGenome {
+public class BestGenome {   // myląca nazwa
     private Map<Genome, Integer> genomes = new HashMap<>();
     private Genome best = null;
     private int bestSize=0;
